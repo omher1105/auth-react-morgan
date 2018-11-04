@@ -8,23 +8,55 @@
  */
 
 import React from 'react';
-import { Switch, Route } from 'react-router-dom';
+import { Router, Route, Redirect } from 'react-router-dom';
 
-import HomePage from 'containers/HomePage/Loadable';
-import NotFoundPage from 'containers/NotFoundPage/Loadable';
-
+import { connect } from 'react-redux';
 import GlobalStyle from '../../global-styles';
-import Login from '../Login';
+import { Login } from '../Login';
+import { history } from '../../helpers/history';
+import { userConstants } from '../../constants/user.constants';
+import { HomePage } from '../HomePage';
 
-export default function App() {
+function PrivateRoute({ component: Component, authenticated, ...rest }) {
   return (
-    <div>
-      <Switch>
-        <Route exact path="/" component={HomePage}/>
-        <Route exact path="/login" name="Login Page" component={Login} />
-        <Route component={NotFoundPage}/>
-      </Switch>
-      <GlobalStyle/>
-    </div>
+    <Route
+      {...rest}
+      render={(props) => !!localStorage.getItem(userConstants.USER_STORAGE_KEY) === true
+        ? <Component {...props} />
+        : <Redirect to={{ pathname: '/login', state: { from: props.location } }}/>}
+    />
   );
 }
+
+export default class App extends React.Component {
+  constructor(props) {
+    super(props);
+
+    const { dispatch } = this.props;
+  }
+
+  render() {
+    return (
+      <div>
+        <Router history={history}>
+          <div>
+            <PrivateRoute exact path="/" component={HomePage}/>
+            <Route exact path="/login" component={Login}/>
+          </div>
+        </Router>
+        <GlobalStyle/>
+      </div>
+    );
+  }
+};
+
+
+function mapStateToProps(state) {
+  const { alert } = state;
+  return {
+    alert,
+  };
+}
+
+const connectedApp = connect(mapStateToProps)(App);
+export { connectedApp as App };

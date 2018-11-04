@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+
 import {
   Button,
   Card,
@@ -13,10 +15,43 @@ import {
   InputGroupText,
   Row,
 } from 'reactstrap';
+import { userActions } from '../../actions/user.actions';
 
 /* eslint-disable react/prefer-stateless-function */
-export default class Login extends Component {
+class Login extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      email: '',
+      password: '',
+      submitted: false,
+    };
+
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  handleChange(e) {
+    const { name, value } = e.target;
+    this.setState({ [name]: value });
+  }
+
+  handleSubmit(e) {
+    e.preventDefault();
+
+    this.setState({ submitted: true });
+    const { email, password } = this.state;
+    const { dispatch } = this.props;
+    if (email && password) {
+      dispatch(userActions.login(email, password));
+    }
+  }
+
   render() {
+    const { loggingIn } = this.props;
+    const { email, password, submitted } = this.state;
+    const getErrorClass = () => `mb-4 ${submitted && !email ? 'has-error' : ''}`;
     return (
       <div className="app flex-row align-items-center">
         <Container>
@@ -25,10 +60,10 @@ export default class Login extends Component {
               <CardGroup>
                 <Card className="p-4">
                   <CardBody>
-                    <Form>
+                    <Form onSubmit={this.handleSubmit}>
                       <h1>Login</h1>
                       <p className="text-muted">Sign In to your account</p>
-                      <InputGroup className="mb-3">
+                      <InputGroup className={getErrorClass()}>
                         <InputGroupAddon addonType="prepend">
                           <InputGroupText>
                             <i className="icon-user"/>
@@ -36,11 +71,13 @@ export default class Login extends Component {
                         </InputGroupAddon>
                         <Input
                           type="text"
+                          name="email"
                           placeholder="Username"
-                          autoComplete="username"
+                          value={email}
+                          onChange={this.handleChange}
                         />
                       </InputGroup>
-                      <InputGroup className="mb-4">
+                      <InputGroup className={getErrorClass()}>
                         <InputGroupAddon addonType="prepend">
                           <InputGroupText>
                             <i className="icon-lock"/>
@@ -48,8 +85,10 @@ export default class Login extends Component {
                         </InputGroupAddon>
                         <Input
                           type="password"
+                          name="password"
                           placeholder="Password"
-                          autoComplete="current-password"
+                          value={password}
+                          onChange={this.handleChange}
                         />
                       </InputGroup>
                       <Row>
@@ -82,6 +121,10 @@ export default class Login extends Component {
                       <Button color="primary" className="mt-3" active>
                         Register Now!
                       </Button>
+                      {loggingIn &&
+                      <img
+                        src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA=="/>
+                      }
                     </div>
                   </CardBody>
                 </Card>
@@ -93,3 +136,13 @@ export default class Login extends Component {
     );
   }
 }
+
+function mapStateToProps(state) {
+  const { loggingIn } = state;
+  return {
+    loggingIn,
+  };
+}
+
+const connectedLoginPage = connect(mapStateToProps)(Login);
+export { connectedLoginPage as Login };

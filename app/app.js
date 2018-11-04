@@ -35,20 +35,16 @@ import { translationMessages } from './i18n';
 
 // Import sass
 import './App.scss';
+import { store } from './helpers/store';
 
 // Create redux store with history
 const initialState = {};
-const store = configureStore(initialState, history);
 const MOUNT_NODE = document.getElementById('app');
 
 const render = messages => {
   ReactDOM.render(
     <Provider store={store}>
-      <LanguageProvider messages={messages}>
-        <ConnectedRouter history={history}>
-          <App />
-        </ConnectedRouter>
-      </LanguageProvider>
+      <App />
     </Provider>,
     MOUNT_NODE,
   );
