@@ -21,9 +21,15 @@ function PrivateRoute({ component: Component, authenticated, ...rest }) {
   return (
     <Route
       {...rest}
-      render={(props) => !!localStorage.getItem(userConstants.USER_STORAGE_KEY) === true
-        ? <Component {...props} />
-        : <Redirect to={{ pathname: '/login', state: { from: props.location } }}/>}
+      render={props =>
+        !!localStorage.getItem(userConstants.USER_STORAGE_KEY) === true ? (
+          <Component {...props} />
+        ) : (
+          <Redirect
+            to={{ pathname: '/login', state: { from: props.location } }}
+          />
+        )
+      }
     />
   );
 }
@@ -40,16 +46,15 @@ export default class App extends React.Component {
       <div>
         <Router history={history}>
           <div>
-            <PrivateRoute exact path="/" component={HomePage}/>
-            <Route exact path="/login" component={Login}/>
+            <PrivateRoute exact path="/" component={HomePage} />
+            <Route exact path="/login" component={Login} />
           </div>
         </Router>
-        <GlobalStyle/>
+        <GlobalStyle />
       </div>
     );
   }
-};
-
+}
 
 function mapStateToProps(state) {
   const { alert } = state;

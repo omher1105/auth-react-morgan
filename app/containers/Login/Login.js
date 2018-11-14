@@ -16,42 +16,55 @@ import {
   Row,
 } from 'reactstrap';
 import { userActions } from '../../actions/user.actions';
+import { GoogleLogout, GoogleLogin } from '../../services/auth-google/index';
 
 /* eslint-disable react/prefer-stateless-function */
 class Login extends React.Component {
-  constructor(props) {
-    super(props);
+  state = {
+    email: '',
+    password: '',
+    submitted: false,
+  };
 
-    this.state = {
-      email: '',
-      password: '',
-      submitted: false,
-    };
+  clientId = () =>
+    '841163980235-1d331bsq1a9cgp5cgo66qd8q2037bidk.apps.googleusercontent.com';
 
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-  }
+  success = response => {
+    console.log(response); // eslint-disable-line
+  };
 
-  handleChange(e) {
+  error = response => {
+    console.error(response); // eslint-disable-line
+  };
+
+  loading = () => {
+    console.log('loading'); // eslint-disable-line
+  };
+
+  logout = () => {
+    console.log('logout'); // eslint-disable-line
+  };
+
+  handleChange = e => {
     const { name, value } = e.target;
     this.setState({ [name]: value });
-  }
+  };
 
-  handleSubmit(e) {
+  handleSubmit = e => {
     e.preventDefault();
-
     this.setState({ submitted: true });
     const { email, password } = this.state;
     const { dispatch } = this.props;
     if (email && password) {
       dispatch(userActions.login(email, password));
     }
-  }
+  };
 
   render() {
     const { loggingIn } = this.props;
     const { email, password, submitted } = this.state;
-    const getErrorClass = () => `mb-4 ${submitted && !email ? 'has-error' : ''}`;
+    const getErrorClass = () =>
+      `mb-4 ${submitted && !email ? 'has-error' : ''}`;
     return (
       <div className="app flex-row align-items-center">
         <Container>
@@ -66,7 +79,7 @@ class Login extends React.Component {
                       <InputGroup className={getErrorClass()}>
                         <InputGroupAddon addonType="prepend">
                           <InputGroupText>
-                            <i className="icon-user"/>
+                            <i className="icon-user" />
                           </InputGroupText>
                         </InputGroupAddon>
                         <Input
@@ -80,7 +93,7 @@ class Login extends React.Component {
                       <InputGroup className={getErrorClass()}>
                         <InputGroupAddon addonType="prepend">
                           <InputGroupText>
-                            <i className="icon-lock"/>
+                            <i className="icon-lock" />
                           </InputGroupText>
                         </InputGroupAddon>
                         <Input
@@ -121,10 +134,28 @@ class Login extends React.Component {
                       <Button color="primary" className="mt-3" active>
                         Register Now!
                       </Button>
-                      {loggingIn &&
-                      <img
-                        src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA=="/>
-                      }
+                      {loggingIn && (
+                        <img src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
+                      )}
+                    </div>
+                    <div>
+                      <GoogleLogin
+                        clientId="841163980235-1d331bsq1a9cgp5cgo66qd8q2037bidk.apps.googleusercontent.com"
+                        scope="https://www.googleapis.com/auth/contacts.readonly"
+                        onSuccess={this.success}
+                        onFailure={this.error}
+                        onRequest={this.loading}
+                        approvalPrompt="force"
+                        responseType="lStp8iCh24s887siUU7TnX3B"
+                        // uxMode="redirect"
+                        // redirectUri="http://google.com"
+                        // disabled
+                        // prompt="consent"
+                        // className='button'
+                        // style={{ color: 'red' }}
+                      >
+                        <span>Sign In with Google</span>
+                      </GoogleLogin>
                     </div>
                   </CardBody>
                 </Card>

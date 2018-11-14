@@ -4,6 +4,7 @@ import { history } from '../helpers/history';
 export const authService = {
   login,
   logout,
+  createUserGoogle,
 };
 
 function login(email, password) {
@@ -27,6 +28,14 @@ function login(email, password) {
 
       return user;
     });
+}
+
+function createUserGoogle() {
+  const requestOptions = {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    // body: JSON.stringify({ email, password }),
+  };
 }
 
 function logout() {
