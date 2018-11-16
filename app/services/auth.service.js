@@ -30,12 +30,20 @@ function login(email, password) {
     });
 }
 
-function createUserGoogle() {
+function createUserGoogle(data) {
   const requestOptions = {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    // body: JSON.stringify({ email, password }),
+    body: JSON.stringify(data),
   };
+
+  return fetch('http://localhost:3000/users/create', requestOptions)
+    .then(handleResponse)
+    .then(user => {
+      if (user.success) {
+        console.log('usuario creado exitosamente');
+      }
+    });
 }
 
 function logout() {
