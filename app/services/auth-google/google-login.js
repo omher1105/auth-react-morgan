@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-
-import Icon from './icons';
-import ButtonContent from './button-content';
+import Icon from './icons'
+import ButtonContent from './button-content'
 
 class GoogleLogin extends Component {
   constructor(props) {
@@ -33,7 +32,8 @@ class GoogleLogin extends Component {
       accessType,
       responseType,
       jsSrc,
-    } = this.props((d, s, id, cb) => {
+    } = this.props;
+    ((d, s, id, cb) => {
       const element = d.getElementsByTagName(s)[0];
       const fjs = element;
       let js = element;
@@ -84,7 +84,8 @@ class GoogleLogin extends Component {
   }
 
   componentWillUnmount() {
-    this.enableButton = () => {};
+    this.enableButton = () => {
+    };
   }
 
   enableButton() {
@@ -99,25 +100,15 @@ class GoogleLogin extends Component {
     }
     if (!this.state.disabled) {
       const auth2 = window.gapi.auth2.getAuthInstance();
-      const {
-        onSuccess,
-        onRequest,
-        onFailure,
-        prompt,
-        responseType,
-      } = this.props;
+      const { onSuccess, onRequest, onFailure, prompt, responseType } = this.props;
       const options = {
         prompt,
       };
       onRequest();
       if (responseType === 'code') {
-        auth2
-          .grantOfflineAccess(options)
-          .then(res => onSuccess(res), err => onFailure(err));
+        auth2.grantOfflineAccess(options).then(res => onSuccess(res), err => onFailure(err));
       } else {
-        auth2
-          .signIn(options)
-          .then(res => this.handleSigninSuccess(res), err => onFailure(err));
+        auth2.signIn(options).then(res => this.handleSigninSuccess(res), err => onFailure(err));
       }
     }
   }
@@ -144,17 +135,7 @@ class GoogleLogin extends Component {
   }
 
   render() {
-    const {
-      tag,
-      type,
-      className,
-      disabledStyle,
-      buttonText,
-      children,
-      render,
-      theme,
-      icon,
-    } = this.props;
+    const { tag, type, className, disabledStyle, buttonText, children, render, theme, icon } = this.props;
     const disabled = this.state.disabled || this.props.disabled;
 
     if (render) {
@@ -220,7 +201,7 @@ class GoogleLogin extends Component {
         className,
       },
       [
-        icon && <Icon key={1} active={this.state.active} />,
+        icon && <Icon key={1} active={this.state.active}/>,
         <ButtonContent icon={icon} key={2}>
           {children || buttonText}
         </ButtonContent>,
@@ -278,7 +259,8 @@ GoogleLogin.defaultProps = {
   },
   icon: true,
   theme: 'light',
-  onRequest: () => {},
+  onRequest: () => {
+  },
   jsSrc: 'https://apis.google.com/js/client:platform.js',
 };
 

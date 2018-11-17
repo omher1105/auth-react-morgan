@@ -29,9 +29,25 @@ class Login extends React.Component {
   clientId = () =>
     '841163980235-1d331bsq1a9cgp5cgo66qd8q2037bidk.apps.googleusercontent.com';
 
-  success = response => {
-    console.log(response); // eslint-disable-line
+  success = googleUser => {
+    // console.log(response); // eslint-disable-line
+    const id_token = googleUser.getAuthResponse().id_token;
+    const googleId = googleUser.getId();
+    console.log(googleUser);
+    console.log(id_token);
+    console.log(googleId);
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', 'http://localhost:3000/users/test/oauth/google');
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.onload = () => {
+      console.log('Signed in as: ' + xhr.responseText);
+    };
+    xhr.send('access_token=' + googleUSer.accessToken);
   };
+
+  componentDidMount() {
+
+  }
 
   error = response => {
     console.error(response); // eslint-disable-line
@@ -79,7 +95,7 @@ class Login extends React.Component {
                       <InputGroup className={getErrorClass()}>
                         <InputGroupAddon addonType="prepend">
                           <InputGroupText>
-                            <i className="icon-user" />
+                            <i className="icon-user"/>
                           </InputGroupText>
                         </InputGroupAddon>
                         <Input
@@ -93,7 +109,7 @@ class Login extends React.Component {
                       <InputGroup className={getErrorClass()}>
                         <InputGroupAddon addonType="prepend">
                           <InputGroupText>
-                            <i className="icon-lock" />
+                            <i className="icon-lock"/>
                           </InputGroupText>
                         </InputGroupAddon>
                         <Input
@@ -135,25 +151,15 @@ class Login extends React.Component {
                         Register Now!
                       </Button>
                       {loggingIn && (
-                        <img src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
+                        <img
+                          src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA=="/>
                       )}
                     </div>
                     <div>
-                      <GoogleLogin
-                        clientId="841163980235-1d331bsq1a9cgp5cgo66qd8q2037bidk.apps.googleusercontent.com"
-                        scope="https://www.googleapis.com/auth/contacts.readonly"
-                        onSuccess={this.success}
-                        onFailure={this.error}
-                        onRequest={this.loading}
-                        approvalPrompt="force"
-                        responseType="lStp8iCh24s887siUU7TnX3B"
-                        // uxMode="redirect"
-                        // redirectUri="http://google.com"
-                        // disabled
-                        // prompt="consent"
-                        // className='button'
-                        // style={{ color: 'red' }}
-                      >
+                      <GoogleLogin onSuccess={this.success}
+                                   onFailure={this.error}
+                                   scope='https://mail.google.com/'
+                                   clientId='841163980235-1d331bsq1a9cgp5cgo66qd8q2037bidk.apps.googleusercontent.com'>
                         <span>Sign In with Google</span>
                       </GoogleLogin>
                     </div>

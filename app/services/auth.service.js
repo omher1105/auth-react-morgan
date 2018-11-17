@@ -5,6 +5,7 @@ export const authService = {
   login,
   logout,
   createUserGoogle,
+  searchToken,
 };
 
 function login(email, password) {
@@ -27,6 +28,23 @@ function login(email, password) {
       }
 
       return user;
+    });
+}
+
+function searchToken(data) {
+  const requestOptions = {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  };
+
+  return fetch('http://localhost:3000/users/search/messages', requestOptions)
+    .then(handleResponse)
+    .then(message => {
+      console.log(message);
+    })
+    .catch(error => {
+      console.log(error);
     });
 }
 
